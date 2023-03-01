@@ -1,9 +1,7 @@
-# import uvicorn
 from fastapi import FastAPI, Depends
 from dotenv import load_dotenv
 
-from .routers import image
-from .core import config
+from .routers import image_router
 
 
 if not load_dotenv():
@@ -12,7 +10,7 @@ if not load_dotenv():
 
 app = FastAPI()
 
-app.include_router(image.router)
+app.include_router(image_router.router)
 
 @app.get('/')
 async def root():
