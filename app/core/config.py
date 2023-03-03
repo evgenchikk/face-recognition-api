@@ -1,5 +1,7 @@
 from os import environ
 from abc import ABC
+from dotenv import load_dotenv
+
 
 class Config(ABC):
     def __init__(self) -> None:
@@ -11,7 +13,11 @@ class Config(ABC):
 
         self.FACE_PLUS_PLUS_API_KEY = environ.get('FACE_PLUS_PLUS_API_KEY') or None
 
-def get_config() -> Config:
-    return Config()
+if not load_dotenv():
+    print('No env variables are set')
+    exit(1) 
 
-config = get_config()
+config = Config()
+
+def get_config() -> Config:
+    return config

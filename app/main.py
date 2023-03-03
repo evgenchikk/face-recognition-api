@@ -1,12 +1,7 @@
-from fastapi import FastAPI, Depends
-from dotenv import load_dotenv
+from fastapi import FastAPI
 
 from .routers import image_router
 
-
-if not load_dotenv():
-    print('No env variables are set')
-    exit(1)
 
 app = FastAPI()
 
