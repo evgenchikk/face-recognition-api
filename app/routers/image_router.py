@@ -1,28 +1,37 @@
-from fastapi import APIRouter, UploadFile, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, UploadFile, HTTPException, Response, Depends
 
-from app.services import image_service
-from app.db.db import get_db
+from app.services.image_service import ImageService
+from app.internal.faceplusplus import fileValidator
 
 
 router = APIRouter(
     prefix='/image',
     tags=['image'],
-    dependencies=[Depends(get_db)]
 )
 
 @router.post('')
-async def image_post(file: UploadFile = None, db_session: Session = Depends(get_db)):
-    return await image_service.upload_new_image(file)
+async def image_post(response: Response, file: UploadFile = None, imageService: ImageService = Depends(ImageService), fileValidator = Depends(fileValidator)):
+    if file == None:
+        response.status_code = 400
+        return {'detail': 'no file provided in your request'}
+
+    try:
+        id = await imageService.upload_new_image(file)
+        response.status_code = 201
+    except Exception as e:
+        response.status_code = 500
+        return {'detail': str(e)}
+
+    return {'id': id}
 
 @router.get('/{id}')
-async def image_get(id: int, color: str = None, db_session: Session = Depends(get_db)):
-    return {'data': 'now working fine'}
+async def image_get(id: int, color: str = None, imageService: ImageService = Depends(ImageService)):
+    return {'data': imageService.get_image_with_colored_face(id, color)}
 
 @router.put('/{id}')
-async def image_put():
+async def image_put(id: int, file: UploadFile = None, imageService: ImageService = Depends(ImageService)):
     pass
 
 @router.delete('/{id}')
-async def image_delete():
+async def image_delete(id: int, imageService: ImageService = Depends(ImageService)):
     pass

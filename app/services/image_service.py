@@ -1,10 +1,22 @@
-from fastapi import UploadFile, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import UploadFile, Depends
 
-async def upload_new_image(file: UploadFile = None, db_session: Session = None):
-    if file == None:
-        raise HTTPException(400, detail='Bad request, no file in your request')
-    if db_session == None:
-        raise HTTPException(500, detail='Internal server error, no connection to the database')
+from app.repository.image_repository import ImageRepository
+from app.internal.faceplusplus import FacePlusPlusApi
 
-    return {'message': 'hello from service upload_new_image()'}
+
+class ImageService():
+    def __init__(self, imageRepository: ImageRepository = Depends(ImageRepository), facePlusPlusApi: FacePlusPlusApi = Depends(FacePlusPlusApi)):
+        self.imageRepository = imageRepository
+        self.facePlusPlusApi = facePlusPlusApi
+
+    async def upload_new_image(self, file: UploadFile = None):
+        try:
+            api_response = await self.facePlusPlusApi.upload(file)
+            id = self.imageRepository.upload_image(file.filename, api_response)
+        except Exception as e:
+            return f'Internal error: {str(e)}'
+
+        return id
+
+    def get_image_with_colored_face(self, id: int, color: str):
+        return ''

@@ -12,12 +12,11 @@ class Config(ABC):
         self.POSTGRES_DB_PORT = '10230'
 
         self.FACE_PLUS_PLUS_API_KEY = environ.get('FACE_PLUS_PLUS_API_KEY') or None
+        self.FACE_PLUS_PLUS_API_SECRET = environ.get('FACE_PLUS_PLUS_API_SECRET') or None
+        self.FACE_PLUS_PLUS_API_URL = 'https://api-us.faceplusplus.com/facepp/v3/detect'
 
-if not load_dotenv():
-    print('No env variables are set')
-    exit(1) 
+        self.IMAGES_CATALOG = 'img'
+
+load_dotenv()
 
 config = Config()
-
-def get_config() -> Config:
-    return config

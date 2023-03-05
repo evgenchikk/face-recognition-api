@@ -1,25 +1,24 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, BINARY
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, DeclarativeBase
 
-from app.db.base import Base
-from app.db.db import engine
+from app.database.database import engine
 
 
-class Images(Base):
+class Base(DeclarativeBase): pass
+
+class ImageModel(Base):
     __tablename__ = 'images'
 
-    id = Column(Integer, primary_key=True, index=True)
-    file_binary = Column(BINARY, nullable=False)
-    fpp_response_id = Column(Integer, ForeignKey('fpp_responses.id'), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    filename = Column(String, nullable=False)
 
-    fpp_response = relationship('FppResponses', back_populates='id')
-
-class FppResponces(Base):
+class FppResponceModel(Base):
     __tablename__ = 'fpp_responses'
 
-    id = Column(Integer, ForeignKey('images.fpp_response_id'), primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     fpp_response = Column(String, nullable=False)
+    image_id = Column(Integer, ForeignKey('images.id'), nullable=False)
 
-    images = relationship('Images', back_populates='fpp_response_id')
+    image = relationship(ImageModel)
 
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(engine)
