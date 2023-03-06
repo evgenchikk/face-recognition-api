@@ -12,7 +12,7 @@ class ImageModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     filename = Column(String, nullable=False)
 
-class FppResponceModel(Base):
+class FppResponseModel(Base):
     __tablename__ = 'fpp_responses'
 
     id = Column(Integer, primary_key=True, autoincrement=True)

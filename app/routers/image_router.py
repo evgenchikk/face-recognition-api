@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, HTTPException, Response, Depends
 
 from app.services.image_service import ImageService
-from app.internal.faceplusplus import fileValidator
+from app.internal.validators import fileValidator, colorValidator
 
 
 router = APIRouter(
@@ -25,13 +25,27 @@ async def image_post(response: Response, file: UploadFile = None, image_service:
     return {'id': id}
 
 @router.get('/{id}')
-async def image_get(id: int, color: str = None, image_service: ImageService = Depends(ImageService)):
-    return {'data': image_service.get_image_with_colored_face(id, color)}
+async def image_get(response: Response, id: int, color: str = None, image_service: ImageService = Depends(ImageService), colorValidator = Depends(colorValidator)):
+    try:
+        image_service.get_image_with_colored_face(id, color)
+    except Exception as e:
+        response.status_code = 500
+        return {'detail': f'{str(e)}'}
+
+    response.status_code = 200
+    return {'data': ''}
 
 @router.put('/{id}')
 async def image_put(id: int, file: UploadFile = None, image_service: ImageService = Depends(ImageService)):
     pass
 
 @router.delete('/{id}')
-async def image_delete(id: int, image_service: ImageService = Depends(ImageService)):
-    pass
+async def image_delete(response: Response, id: int, image_service: ImageService = Depends(ImageService)):
+    try:
+        id = image_service.delete_image_by_id(id)
+    except Exception as e:
+        response.status_code = 500
+        return {'detail': f'{str(e)}'}
+
+    response.status_code = 200
+    return {'id': id}

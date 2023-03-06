@@ -15,6 +15,7 @@ class FacePlusPlusApi():
         data = {
             'api_key': self.api_key,
             'api_secret': self.api_secret,
+            'return_attributes': 'headpose',
         }
         files = {
             'image_file': await file.read(),
@@ -30,10 +31,6 @@ class FacePlusPlusApi():
             raise HTTPException(500, f'problems with Face++ API: {api_response.json()}')
         return api_response.json()
 
-
-def fileValidator(file: UploadFile):
-    if file.content_type not in ['image/jpeg', 'image/png']:
-        raise HTTPException(400, 'wrong file type, expected jpeg or png')
-    if file.size > 2 * 1024 * 1024:
-        raise HTTPException(400, 'file is too large, expected file < 2 MB')
+    def draw_face_rectangle(self):
+        pass
 
