@@ -5,14 +5,14 @@ from app.internal.faceplusplus import FacePlusPlusApi
 
 
 class ImageService():
-    def __init__(self, imageRepository: ImageRepository = Depends(ImageRepository), facePlusPlusApi: FacePlusPlusApi = Depends(FacePlusPlusApi)):
-        self.imageRepository = imageRepository
-        self.facePlusPlusApi = facePlusPlusApi
+    def __init__(self, image_repository: ImageRepository = Depends(ImageRepository), face_plus_plus_api: FacePlusPlusApi = Depends(FacePlusPlusApi)):
+        self.image_repository = image_repository
+        self.face_plus_plus_api = face_plus_plus_api
 
-    async def upload_new_image(self, file: UploadFile = None):
+    async def upload_image(self, file: UploadFile = None):
         try:
-            api_response = await self.facePlusPlusApi.upload(file)
-            id = self.imageRepository.upload_image(file.filename, api_response)
+            api_response = await self.face_plus_plus_api.upload(file)
+            id = self.image_repository.upload_image(file.filename, api_response)
         except Exception as e:
             return f'Internal error: {str(e)}'
 

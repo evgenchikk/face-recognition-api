@@ -3,6 +3,7 @@ import json
 from fastapi import Depends
 
 from sqlalchemy.orm import Session
+# from sqlalchemy import exc
 
 from app.database.database import get_session
 from app.models.models import ImageModel, FppResponceModel
