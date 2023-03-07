@@ -14,5 +14,5 @@ def fileValidator(file: UploadFile):
 def colorValidator(color: str):
     if not re.match(r'[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}', color):
         raise HTTPException(400,
-                            'wrong color format, expected color in hex format: xxxxxx or xxx (request example /1?color=660099)'
+                            'wrong color format, expected color in hex RGB format: <RRGGBB> or <RGB> (request example /1?color=f99)'
         )

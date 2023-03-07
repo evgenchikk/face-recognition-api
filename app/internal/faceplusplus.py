@@ -11,14 +11,15 @@ class FacePlusPlusApi():
         self.api_secret = config.FACE_PLUS_PLUS_API_SECRET
         self.api_url = config.FACE_PLUS_PLUS_API_URL
 
-    async def upload(self, file: UploadFile):
+
+    async def upload(self, file: bytes):
         data = {
             'api_key': self.api_key,
             'api_secret': self.api_secret,
             'return_attributes': 'headpose',
         }
         files = {
-            'image_file': await file.read(),
+            'image_file': file,
         }
 
         api_response = requests.post(
@@ -30,6 +31,7 @@ class FacePlusPlusApi():
         if not api_response.ok:
             raise HTTPException(500, f'problems with Face++ API: {api_response.json()}')
         return api_response.json()
+
 
     def draw_face_rectangle(self):
         pass

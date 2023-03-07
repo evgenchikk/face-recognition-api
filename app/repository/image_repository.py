@@ -13,7 +13,8 @@ class ImageRepository():
     def __init__(self, db_session: Session = Depends(get_session)):
         self.db_session = db_session
 
-    def upload_image(self, filename: str, api_response: dict) -> int:
+
+    async def upload_image(self, filename: str, api_response: dict) -> int:
         image = ImageModel(
             filename=filename,
         )
@@ -33,11 +34,24 @@ class ImageRepository():
 
         return image.id
 
+
+    async def replace_fpp_response(self, api_response: dict, image_id: int) -> int:
+        fpp_response = self.get_fpp_response_by_image_id(image_id)
+        fpp_response.fpp_response = api_response
+
+        self.db_session.add(fpp_response)
+        self.db_session.commit()
+        self.db_session.refresh(fpp_response)
+
+        return fpp_response.id
+
+
     def get_image_by_id(self, id: int) -> ImageModel:
         image = self.db_session.get(ImageModel, id)
         if not image:
             raise exc.NoResultFound()
         return image
+
 
     def get_fpp_response_by_image_id(self, id) -> FppResponseModel:
         fpp_response = self.db_session.query(FppResponseModel).filter(FppResponseModel.image_id == id).one()
@@ -46,7 +60,7 @@ class ImageRepository():
         return fpp_response
 
 
-    def delete_image_by_id(self, id: int) -> int:
+    async def delete_image_by_id(self, id: int) -> int:
         image = self.db_session.get(ImageModel, id)
         if not image:
             raise exc.NoResultFound()
@@ -58,4 +72,18 @@ class ImageRepository():
         self.db_session.delete(image)
         self.db_session.delete(fpp_response)
         self.db_session.commit()
+
+        return image.id
+
+
+    async def replace_with_new_file(self, id: int, filename: str) -> int:
+        image = self.db_session.get(ImageModel, id)
+        if not image:
+            raise exc.NoResultFound()
+
+        image.filename = filename
+        self.db_session.add(image)
+        self.db_session.commit()
+        self.db_session.refresh(image)
+
         return image.id
