@@ -5,18 +5,25 @@ from fastapi import UploadFile, Depends
 from sqlalchemy import exc
 
 from app.repository.image_repository import ImageRepository
+from app.repository.local_repository import LocalRepository
 from app.internal.faceplusplus import FacePlusPlusApi
 from app.internal.image_processing import ImageProcessor
 
 
 class ImageService():
-    def __init__(self, image_repository: ImageRepository = Depends(ImageRepository), face_plus_plus_api: FacePlusPlusApi = Depends(FacePlusPlusApi), image_processor: ImageProcessor = Depends(ImageProcessor)):
+    def __init__(self, 
+                 image_repository: ImageRepository = Depends(ImageRepository), 
+                 local_repository: LocalRepository = Depends(LocalRepository), 
+                 face_plus_plus_api: FacePlusPlusApi = Depends(FacePlusPlusApi), 
+                 image_processor: ImageProcessor = Depends(ImageProcessor)):
         self.image_repository = image_repository
+        self.local_repository = local_repository
         self.face_plus_plus_api = face_plus_plus_api
         self.image_processor = image_processor
 
     async def upload_image(self, file: UploadFile = None):
         try:
+            # await self.local_repository.save_file(file.read())
             api_response = await self.face_plus_plus_api.upload(file)
             id = self.image_repository.upload_image(file.filename, api_response)
         except Exception as e:

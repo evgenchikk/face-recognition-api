@@ -8,7 +8,7 @@ from app.core.config import Config
 
 class ImageProcessor():
     def __init__(self, config: Config = Depends(Config)):
-        self.images_catalog = config.IMAGES_CATALOG
+        self.local_images_catalog = config.LOCAL_IMAGES_CATALOG
 
     def draw_rectangle(self, filename: str, color: str, face_rectangle: dict, headpose: dict):
         img = cv2.imread(f'{self.images_catalog}/{filename}')

@@ -15,7 +15,7 @@ class Config(ABC):
         self.FACE_PLUS_PLUS_API_SECRET = environ.get('FACE_PLUS_PLUS_API_SECRET') or None
         self.FACE_PLUS_PLUS_API_URL = 'https://api-us.faceplusplus.com/facepp/v3/detect'
 
-        self.IMAGES_CATALOG = 'img'
+        self.LOCAL_IMAGES_CATALOG = 'uploads'
 
 load_dotenv()
 

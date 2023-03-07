@@ -4,6 +4,8 @@ from fastapi import HTTPException, UploadFile
 
 
 def fileValidator(file: UploadFile):
+    if file == None:
+        raise HTTPException(400, 'no file provided in your request')
     if file.content_type not in ['image/jpeg', 'image/png']:
         raise HTTPException(400, 'wrong file type, expected jpeg or png')
     if file.size > 2 * 1024 * 1024:
