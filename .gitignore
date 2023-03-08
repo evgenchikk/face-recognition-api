@@ -3,7 +3,9 @@
 
 venv/
 __pycache__/
+
 uploads/
-test_img/
+
+postgres/
 
 .DS_Store
