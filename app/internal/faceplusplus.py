@@ -31,8 +31,3 @@ class FacePlusPlusApi():
         if not api_response.ok:
             raise HTTPException(500, f'problems with Face++ API: {api_response.json()}')
         return api_response.json()
-
-
-    def draw_face_rectangle(self):
-        pass
-

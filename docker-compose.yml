@@ -20,9 +20,9 @@ services:
       retries: 5
 
   aidiagnostic-api-server:
-    build: . 
+    build: .
     entrypoint: ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "${PORT:-3000}"]
-    depends_on: 
+    depends_on:
       aidiagnostic-db:
         condition: service_healthy
     network_mode: "host"
@@ -39,7 +39,7 @@ services:
       - ./uploads:/app/uploads
     container_name: "aidiagnostic-api-server-container"
     healthcheck:
-      test: "curl --fail http://localhost:3000"
+      test: "curl --fail http://localhost:${PORT:-3000}"
       interval: 10s
       timeout: 10s
       start_period: 10s
