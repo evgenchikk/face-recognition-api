@@ -21,13 +21,13 @@ services:
 
   aidiagnostic-api-server:
     build: . 
-    entrypoint: ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "${PORT}"]
+    entrypoint: ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "${PORT:-3000}"]
     depends_on: 
       aidiagnostic-db:
         condition: service_healthy
     network_mode: "host"
     environment:
-      PORT: "${PORT}"
+      PORT: "${PORT:-3000}"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB_HOST: "localhost"
