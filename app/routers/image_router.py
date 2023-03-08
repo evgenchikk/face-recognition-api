@@ -11,8 +11,6 @@ router = APIRouter(
 )
 
 
-# Принимает картинку, прогоняет ее через API [FacePlusPlus](https://www.faceplusplus.com/), и кладет результат в базу.
-# Возвращает JSON `{‘id’: <id>}`
 @router.post('')
 async def image_post(response: Response,
                      file: UploadFile = None,
@@ -27,8 +25,6 @@ async def image_post(response: Response,
     return {'id': id}
 
 
-# Принимает id и параметр color – цвет, этим цветом отрисовывает на картинке лица,
-# которые нашлись с помощью FacePlusPlus и возвращает в ответ отрисованную картинку
 @router.get('/{id}')
 async def image_get(id: int,
                     color: str = None,
@@ -44,7 +40,6 @@ async def image_get(id: int,
                              headers={'Content-Disposition': f'attachment; filename=processed.{extension}'})
 
 
-# Принимает картинку, меняет ее для записи с соответствующим id и прогоняет через FacePlusPlus
 @router.put('/{id}')
 async def image_put(response: Response,
                     id: int,
@@ -60,7 +55,6 @@ async def image_put(response: Response,
     return {'id': id}
 
 
-# Удаляет картинку и запись с соответствующим id
 @router.delete('/{id}')
 async def image_delete(response: Response,
                        id: int, image_service:

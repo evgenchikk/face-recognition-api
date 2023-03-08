@@ -4,5 +4,6 @@
 venv/
 __pycache__/
 uploads/
+test_img/
 
 .DS_Store

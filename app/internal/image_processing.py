@@ -16,11 +16,13 @@ class ImageProcessor():
 
         for i in range (fpp_response['face_num']):
             pt1 = (fpp_response['faces'][i]['face_rectangle']['left'],
-                   fpp_response['faces'][i]['face_rectangle']['top'])
+                fpp_response['faces'][i]['face_rectangle']['top'])
 
             pt2 = (int((fpp_response['faces'][i]['face_rectangle']['left']+fpp_response['faces'][i]['face_rectangle']['width']) * math.cos(math.radians(fpp_response['faces'][i]['attributes']['headpose']['pitch_angle']))),
-                   int((fpp_response['faces'][i]['face_rectangle']['top']+fpp_response['faces'][i]['face_rectangle']['height']) * math.cos(math.radians(fpp_response['faces'][i]['attributes']['headpose']['pitch_angle'])))
+                int((fpp_response['faces'][i]['face_rectangle']['top']+fpp_response['faces'][i]['face_rectangle']['height']) * math.cos(math.radians(fpp_response['faces'][i]['attributes']['headpose']['pitch_angle'])))
             )
+
+
 
             bgr = ''
             if len(color) == 6:

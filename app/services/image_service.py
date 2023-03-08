@@ -30,8 +30,9 @@ class ImageService():
             filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1]}'
 
             api_response = await self.face_plus_plus_api.upload(file_binary)
-            await self.local_repository.save_file(filename, file_binary)
-            id = await self.image_repository.upload_image(filename, api_response)
+            await self.local_repository.save_file(filename=filename, file_binary=file_binary)
+            id = await self.image_repository.save_image(filename=filename)
+            await self.image_repository.save_api_response(api_response=json.dumps(api_response), image_id=id)
         except Exception as e:
             return f'Internal error: {str(e)}'
 
@@ -40,34 +41,30 @@ class ImageService():
 
     async def get_image_with_colored_face(self, id: int, color: str) -> tuple:
         try:
-            image = self.image_repository.get_image_by_id(id)
-            fpp_response = json.loads(self.image_repository.get_fpp_response_by_image_id(id).fpp_response)
-        except exc.NoResultFound as e:
-            raise Exception(f'Internal error: no result found with requestes id ({id})')
-        except Exception as e:
-            raise Exception(f'Internal error: {str(e)}')
-
-        try:
-            processed_binary = await self.image_processor.draw_rectangle(filename=image.filename,
-                                                color=color,
-                                                fpp_response=fpp_response)
+            image = await self.image_repository.get_image_by_id(id=id)
+            fpp_response = await self.image_repository.get_api_response_by_image_id(image_id=id)
         except Exception as e:
             return f'Internal error: {str(e)}'
 
+        try:
+            processed_binary = await self.image_processor.draw_rectangle(filename=image.filename,
+                                                                         color=color,
+                                                                         fpp_response=json.loads(fpp_response.fpp_response))
+        except Exception as e:
+            return f'Failed on drawing face rect: {str(e)}'
+
         result = BytesIO(processed_binary)
         result.seek(0)
+
         return result, str(image.filename).split('.')[-1]
 
 
     async def delete_image_by_id(self, id: int) -> int:
         try:
-            image = await self.image_repository.get_image_by_id(id)
+            await self.image_repository.delete_api_response_by_image_id(image_id=id)
             id = await self.image_repository.delete_image_by_id(id)
-            await self.local_repository.delete_file_by_name(image.filename)
-        except exc.NoResultFound as e:
-            raise Exception(f'Internal error: no result found with requestes id ({id})')
         except Exception as e:
-            raise Exception(f'Internal error: {str(e)}')
+            return f'Internal error: {str(e)}'
 
         return id
 
@@ -77,12 +74,12 @@ class ImageService():
             file_binary = await file.read()
             filename = f'{uuid.uuid4()}.{file.filename.split(".")[-1]}'
 
-            await self.local_repository.save_file(filename, file_binary)
-            image_id = await self.image_repository.replace_with_new_file(id, filename)
-            api_response = await self.face_plus_plus_api.upload(file_binary)
-            await self.image_repository.replace_fpp_response(api_response, image_id)
+            api_response = await self.face_plus_plus_api.upload(file=file_binary)
 
+            await self.local_repository.save_file(filename=filename, file_binary=file_binary)
+            image_id = await self.image_repository.update_image_by_id(id=id, filename=filename)
+            await self.image_repository.update_api_response_by_image_id(image_id=image_id, api_response=api_response)
         except Exception as e:
-            raise Exception(f'Internal error: {str(e)}')
+            return f'Internal error: {str(e)}'
 
         return image_id
