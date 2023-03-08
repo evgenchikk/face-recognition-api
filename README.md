@@ -3,9 +3,9 @@
 ## Launch
 1) git clone https://github.com/evgenchikk/face-recognition-api
 
-2) create or change .env file in the project directory with:
-PORT=\<port\>
-FACE_PLUS_PLUS_API_KEY=\<your face++ api key\>
+2) create or change .env file in the project directory with:<br>
+PORT=\<port\><br>
+FACE_PLUS_PLUS_API_KEY=\<your face++ api key\><br>
 FACE_PLUS_PLUS_API_SECRET=\<your face++ api secret\>
 
 3) run "docker compose up -d"
