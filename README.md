@@ -19,7 +19,7 @@ curl -X POST -F "file=@\<path to your file\>" "localhost:\<port\>/image"
 #### GET /image/\<id\>?color=\<hex color in RGB format\>
 Requires the image id and the color<br>
 ___curl exmaple:___
-curl -X GET -O "localhost:\<port\>/image/1?color=f99"
+curl -X GET -O -J "localhost:\<port\>/image/1?color=f99"
 
 #### PUT /image/\<id\>
 Requires a file upload<br>
