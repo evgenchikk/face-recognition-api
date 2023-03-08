@@ -44,7 +44,7 @@ class ImageService():
             image = await self.image_repository.get_image_by_id(id=id)
             fpp_response = await self.image_repository.get_api_response_by_image_id(image_id=id)
         except Exception as e:
-            return f'Internal error: {str(e)}'
+            raise Exception(f'Internal error on get image with id={id}')
 
         try:
             processed_binary = await self.image_processor.draw_rectangle(filename=image.filename,
